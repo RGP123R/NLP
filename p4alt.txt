@@ -1,0 +1,21 @@
+import nltk
+from nltk import CFG
+grammar = CFG.fromstring("""
+S -> NP VP
+NP -> Det N | N
+VP -> V NP | V
+Det -> 'the' | 'a'
+N -> 'cat' | 'dog'
+V -> 'chased' | 'saw'
+""")
+
+def bottom_up_parse(sentence):
+    words = sentence.split()
+    parser = nltk.ChartParser(grammar) 
+    print("\nBottom-Up Parsing:")
+    
+    for tree in parser.parse(words):
+        print(tree)
+        tree.draw() 
+
+bottom_up_parse("the cat saw a dog")

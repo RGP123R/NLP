@@ -1,0 +1,32 @@
+import nltk
+import re
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('punkt_tab')
+
+def preprocess_text(text):
+    tokens = word_tokenize(text)
+    filtered_tokens = [word for word in tokens if word.isalpha()]
+    validated_tokens = [word for word in filtered_tokens if all(ord(char) < 128 for char in word)]
+    stop_words = set(stopwords.words('english'))
+    tokens_no_stopwords = [word for word in validated_tokens if word.lower() not in stop_words]
+    stemmer = PorterStemmer()
+    stemmed_tokens = [stemmer.stem(word) for word in tokens_no_stopwords]
+    return {
+        "Original Tokens": tokens,
+        "Filtered Tokens": filtered_tokens,
+        "Validated Tokens": validated_tokens,
+        "Tokens without Stopwords": tokens_no_stopwords,
+        "Stemmed Tokens": stemmed_tokens
+    }
+
+sample_text = "Natural Language Processing (NLP) is evolving! It helps machines understand human languages in 2024."
+result = preprocess_text(sample_text)
+
+for step, tokens in result.items():
+    print(f"\n◻ {step}:")
+    print(tokens)

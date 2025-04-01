@@ -1,0 +1,36 @@
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
+import matplotlib.pyplot as plt
+
+nltk.download('punkt')
+
+text = "The cat sat on the mat. The cat is happy. The mat is soft."
+tokens = word_tokenize(text.lower())
+
+def calculate_ngram_probabilities(tokens, n):
+    n_grams = list(ngrams(tokens, n, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
+    total_ngrams = len(n_grams)
+    ngram_counts = Counter(n_grams)
+    probabilities = {ngram: count / total_ngrams for ngram, count in ngram_counts.items()}
+    return probabilities
+
+unigram_probs = calculate_ngram_probabilities(tokens, 1)
+bigram_probs = calculate_ngram_probabilities(tokens, 2)
+trigram_probs = calculate_ngram_probabilities(tokens, 3)
+
+def plot_ngram_probabilities(ngram_probs, title):
+    ngrams, probs = zip(*ngram_probs.items())
+    ngrams = [' '.join(ngram) for ngram in ngrams]
+    plt.figure(figsize=(10, 5))
+    plt.barh(ngrams, probs, color='skyblue')
+    plt.xlabel('Probability')
+    plt.ylabel('N-grams')
+    plt.title(title)
+    plt.gca().invert_yaxis()
+    plt.show()
+
+plot_ngram_probabilities(unigram_probs, "Unigram Probabilities")
+plot_ngram_probabilities(bigram_probs, "Bigram Probabilities")
+plot_ngram_probabilities(trigram_probs, "Trigram Probabilities")

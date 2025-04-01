@@ -1,0 +1,24 @@
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
+
+nltk.download('punkt')
+
+text = "The cat sat on the mat. The cat is happy. The mat is soft."
+tokens = word_tokenize(text.lower())
+
+def calculate_ngram_probabilities(tokens, n):
+    n_grams = list(ngrams(tokens, n, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
+    total_ngrams = len(n_grams)
+    ngram_counts = Counter(n_grams)
+    probabilities = {ngram: count / total_ngrams for ngram, count in ngram_counts.items()}
+    return probabilities
+
+unigram_probs = calculate_ngram_probabilities(tokens, 1)
+bigram_probs = calculate_ngram_probabilities(tokens, 2)
+trigram_probs = calculate_ngram_probabilities(tokens, 3)
+
+print("Unigram Probabilities:\n", unigram_probs, "\n")
+print("Bigram Probabilities:\n", bigram_probs, "\n")
+print("Trigram Probabilities:\n", trigram_probs, "\n")

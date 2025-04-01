@@ -1,0 +1,33 @@
+import nltk
+from nltk import CFG
+
+grammar = CFG.fromstring("""
+S -> NP VP
+NP -> Det N | N
+VP -> V NP | V
+Det -> 'the' | 'a'
+N -> 'cat' | 'dog'
+V -> 'chased' | 'saw'
+""")
+
+def top_down_parse(sentence):
+    words = sentence.split()
+    parser = nltk.ChartParser(grammar)
+    print("\nTop-Down Parsing:")
+    for tree in parser.parse(words):
+        print(tree)
+
+top_down_parse("the cat chased the dog")
+
+def bottom_up_parse(sentence):
+    words = sentence.split()
+    parser = nltk.ShiftReduceParser(grammar)
+    parser.trace(2)
+    print("\nBottom-Up Parsing:")
+    try:
+        for tree in parser.parse(words):
+            print(tree)
+    except ValueError:
+        print("No valid parse found!")
+
+bottom_up_parse("the cat saw a dog")
